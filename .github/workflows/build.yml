@@ -116,8 +116,9 @@ jobs:
       - uses: actions/download-artifact@v4
       - uses: actions/checkout@v4
       - name: Package macOS ARM
-        run: ditto -c -k --sequesterRsrc Kokoro-TTS-macOS-ARM Kokoro-TTS-macOS-ARM.zip
-        shell: bash
+        run: |
+          cd Kokoro-TTS-macOS-ARM
+          zip -r ../Kokoro-TTS-macOS-ARM.zip .
       - name: Package Linux
         run: |
           cd Kokoro-TTS-Linux
