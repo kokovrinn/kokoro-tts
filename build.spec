@@ -3,6 +3,7 @@ import os
 import platform
 import site
 import subprocess
+import sys
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
@@ -98,10 +99,22 @@ elif system == "Windows":
 app_name = "Kokoro TTS"
 
 # --- Analysis ---
+binaries = []
+if system == "Windows":
+    for dll in [f"python{sys.version_info.major}{sys.version_info.minor}.dll", "python3.dll"]:
+        for base in [sys.base_prefix, os.path.join(sys.base_prefix, "DLLs")]:
+            p = os.path.join(base, dll)
+            if os.path.exists(p):
+                binaries.append((p, "."))
+    for vc in ["vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll"]:
+        p = os.path.join(os.path.dirname(sys.executable), vc)
+        if os.path.exists(p):
+            binaries.append((p, "."))
+
 a = Analysis(
     ["app/main.py"],
     pathex=[],
-    binaries=[],
+    binaries=binaries,
     datas=datas,
     hiddenimports=hidden,
     hookspath=[],

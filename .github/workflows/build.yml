@@ -57,6 +57,8 @@ jobs:
         run: pip install -r requirements.txt
       - name: Build .app
         run: pyinstaller build.spec
+      - name: Sign .app (ad-hoc)
+        run: codesign --deep --force --sign - "dist/Kokoro TTS.app"
       - name: Package .dmg
         run: |
           hdiutil create -volname "Kokoro TTS" \
