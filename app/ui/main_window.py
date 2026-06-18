@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QListWidget,
     QListWidgetItem,
     QMainWindow,
+    QMessageBox,
     QProgressBar,
     QPushButton,
     QSlider,
@@ -32,6 +33,7 @@ from app.ui.icons import icon_pencil, icon_play, icon_plus, icon_search, icon_tr
 from app.ui.settings_dialog import SettingsDialog
 from app.ui.styles import get_style
 from app.ui.text_panel import TextPanel
+from app.version import __version__
 
 
 def _voice_gender(voice: str) -> str:
@@ -541,8 +543,6 @@ class MainWindow(QMainWindow):
             self._load_config_to_ui()
 
     def _show_about(self):
-        from PySide6.QtWidgets import QMessageBox
-        from app.version import __version__
         QMessageBox.about(
             self, "About Kokoro TTS",
             f"<h3>Kokoro TTS <small>v{__version__}</small></h3>"
