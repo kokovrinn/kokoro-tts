@@ -1,29 +1,29 @@
-import sys
 import os
 import shutil
+import sys
 from pathlib import Path
 
 _project_root = Path(__file__).resolve().parent.parent
 if str(_project_root) not in sys.path:
     sys.path.insert(0, str(_project_root))
 
-from app.core.config import MODEL_DIR, CONFIG_DIR
+from app.core.config import CONFIG_DIR, MODEL_DIR
 
 os.environ.setdefault("HF_HUB_DISABLE_PROGRESS_BARS", "1")
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
 os.environ.setdefault("KOKORO_LOG_LEVEL", "WARNING")
 os.environ.setdefault("HF_HUB_CACHE", str(MODEL_DIR))
 
-from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication
 
 _icon = str(_project_root / "kokoro-tts.png")
 
 from app.core.config import config
 from app.core.model_manager import ModelManager
-from app.ui.main_window import MainWindow
 from app.ui.download_dialog import DownloadDialog
+from app.ui.main_window import MainWindow
 from app.ui.setup_dialog import SetupDialog
 from app.ui.styles import get_style
 

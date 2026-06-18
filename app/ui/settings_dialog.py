@@ -1,13 +1,21 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QComboBox, QSlider, QCheckBox, QFileDialog, QGroupBox,
-    QWidget, QFormLayout,
+    QCheckBox,
+    QComboBox,
+    QDialog,
+    QFileDialog,
+    QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSlider,
+    QVBoxLayout,
 )
 
 from app.core.config import config
 from app.core.model_manager import ModelManager
-from app.core.voices import LANGUAGES, VOICE_INFO, get_all_voices, get_voice_display_name
+from app.core.voices import LANGUAGES, get_all_voices, get_voice_display_name
 
 
 class SettingsDialog(QDialog):
@@ -143,7 +151,7 @@ class SettingsDialog(QDialog):
     def _on_language_changed(self):
         code = self._lang_combo.currentData()
         current_voice = self._voice_combo.currentData()
-        
+
         # Smart default: select first voice of this language if current voice is mismatched
         if not current_voice or not current_voice.startswith(code):
             for i in range(self._voice_combo.count()):

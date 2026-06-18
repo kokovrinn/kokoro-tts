@@ -6,18 +6,25 @@ from pathlib import Path
 
 import numpy as np
 import soundfile as sf
-from PySide6.QtCore import Qt, QUrl, QPointF
-from PySide6.QtGui import QPainter, QColor, QPen, QDesktopServices
-from PySide6.QtMultimedia import QMediaPlayer, QAudioOutput
+from PySide6.QtCore import QPointF, Qt, QUrl
+from PySide6.QtGui import QColor, QDesktopServices, QPainter, QPen
+from PySide6.QtMultimedia import QAudioOutput, QMediaPlayer
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QPushButton, QSlider,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
 )
 
 from app.core.config import config
 from app.ui.icons import (
-    icon_play, icon_pause, icon_volume_high, icon_folder_open,
+    icon_folder_open,
+    icon_pause,
+    icon_play,
     icon_trash,
+    icon_volume_high,
 )
 
 
@@ -46,10 +53,10 @@ class WaveformWidget(QWidget):
         m = 8
 
         is_dark = config.theme == "dark"
-        
+
         bg_color = QColor("#16161a") if is_dark else QColor("#ffffff")
         border_color = QColor(255, 255, 255, 12) if is_dark else QColor(0, 0, 0, 20)
-        
+
         painter.setPen(QPen(border_color, 1))
         painter.setBrush(bg_color)
         painter.drawRoundedRect(1, 1, w - 2, h - 2, 8, 8)
@@ -82,15 +89,15 @@ class WaveformWidget(QWidget):
 
         audio = np.asarray(self._audio, dtype=np.float64).flatten()
         n = len(audio)
-        
+
         bar_w = 2
         bar_gap = 1
         bar_step = bar_w + bar_gap
-        
+
         usable_w = w - m * 2
         num_bars = max(1, usable_w // bar_step)
         chunk_size = max(1, n // num_bars)
-        
+
         mid = h // 2
         scale = (h - m * 2) // 2
 
@@ -102,7 +109,7 @@ class WaveformWidget(QWidget):
             idx = i * chunk_size
             end = min(idx + chunk_size, n)
             chunk = audio[idx:end]
-            
+
             if len(chunk) == 0:
                 y_t = mid - 1
                 y_b = mid + 1
@@ -117,7 +124,7 @@ class WaveformWidget(QWidget):
 
             bar_progress = (i / num_bars) * 100.0
             color = played_color if bar_progress <= self._progress else unplayed_color
-            
+
             pen = QPen(color, bar_w)
             pen.setCapStyle(Qt.PenCapStyle.RoundCap)
             painter.setPen(pen)

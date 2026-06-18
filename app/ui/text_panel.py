@@ -1,12 +1,19 @@
-from PySide6.QtCore import Qt, Signal
+from PySide6.QtCore import Signal
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
 from PySide6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTextEdit, QLabel,
-    QPushButton, QFileDialog, QFrame, QApplication,
+    QApplication,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
 
 from app.core.text_extractor import extract_text
-from app.ui.icons import icon_text, icon_folder_open, icon_clipboard, icon_trash
+from app.ui.icons import icon_clipboard, icon_folder_open, icon_text, icon_trash
 
 
 class TextPanel(QWidget):

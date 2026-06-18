@@ -173,7 +173,7 @@ def get_all_voices() -> list[str]:
     global _cached_voices
     if _cached_voices is not None:
         return _cached_voices
-    
+
     try:
         from huggingface_hub import list_repo_files
         files = list_repo_files(REPO_ID)
@@ -183,14 +183,14 @@ def get_all_voices() -> list[str]:
             return _cached_voices
     except Exception:
         pass
-        
+
     _cached_voices = ALL_VOICES
     return _cached_voices
 
 def get_voice_display_name(voice: str) -> str:
     if voice in VOICE_INFO:
         return f"{voice} — {VOICE_INFO[voice]}"
-    
+
     parts = voice.split("_")
     if len(parts) == 2:
         prefix, name = parts

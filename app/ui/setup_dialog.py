@@ -2,14 +2,20 @@ import os
 
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-    QComboBox, QLineEdit, QFileDialog, QFrame,
+    QComboBox,
+    QDialog,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QVBoxLayout,
 )
 
 from app.core.config import config
 from app.core.model_manager import ModelManager
-from app.core.voices import LANGUAGES, VOICES, VOICE_INFO
-
+from app.core.voices import LANGUAGES, VOICE_INFO, VOICES
 
 OUTPUT_FORMATS = [
     (".wav", "wav"),

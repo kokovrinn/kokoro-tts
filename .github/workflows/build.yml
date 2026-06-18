@@ -1,0 +1,159 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install ruff
+      - run: ruff check app/
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Import check
+        run: |
+          python -c "
+          import sys, os
+          os.environ['QT_QPA_PLATFORM'] = 'offscreen'
+          from PySide6.QtWidgets import QApplication
+          app = QApplication([])
+          from app.core.config import config
+          from app.core.session_manager import SessionManager
+          from app.core.text_extractor import extract_text
+          from app.core.voices import LANGUAGES, VOICES, VOICE_INFO
+          print('All imports OK')
+          "
+
+  build-macos-arm:
+    if: github.ref_type == 'tag'
+    runs-on: macos-14
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install system deps
+        run: brew install portaudio espeak-ng
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Build .app
+        run: pyinstaller build.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kokoro-TTS-macOS-ARM
+          path: dist/Kokoro TTS.app/
+
+  build-macos-intel:
+    if: github.ref_type == 'tag'
+    runs-on: macos-13
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install system deps
+        run: brew install portaudio espeak-ng
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Build .app
+        run: pyinstaller build.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kokoro-TTS-macOS-Intel
+          path: dist/Kokoro TTS.app/
+
+  build-linux:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install system deps
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y espeak-ng libespeak-ng-dev portaudio19-dev
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Build binary
+        run: pyinstaller build.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kokoro-TTS-Linux
+          path: dist/Kokoro TTS/
+
+  build-windows:
+    if: github.ref_type == 'tag'
+    runs-on: windows-latest
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install system deps
+        run: choco install espeak-ng -y
+        continue-on-error: true
+      - name: Install Python deps
+        run: pip install -r requirements.txt
+      - name: Build binary
+        run: pyinstaller build.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Kokoro-TTS-Windows
+          path: dist/Kokoro TTS/
+
+  release:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    needs: [build-macos-arm, build-macos-intel, build-linux, build-windows]
+    steps:
+      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v4
+      - name: Package macOS ARM
+        run: ditto -c -k --sequesterRsrc Kokoro-TTS-macOS-ARM Kokoro-TTS-macOS-ARM.zip
+        shell: bash
+      - name: Package macOS Intel
+        run: ditto -c -k --sequesterRsrc Kokoro-TTS-macOS-Intel Kokoro-TTS-macOS-Intel.zip
+        shell: bash
+      - name: Package Linux
+        run: |
+          cd Kokoro-TTS-Linux
+          tar czf ../Kokoro-TTS-Linux.tar.gz .
+      - name: Package Windows
+        run: |
+          cd Kokoro-TTS-Windows
+          7z a ../Kokoro-TTS-Windows.zip .
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            Kokoro-TTS-macOS-ARM.zip
+            Kokoro-TTS-macOS-Intel.zip
+            Kokoro-TTS-Linux.tar.gz
+            Kokoro-TTS-Windows.zip
+          generate_release_notes: true

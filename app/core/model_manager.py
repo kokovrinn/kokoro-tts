@@ -71,7 +71,7 @@ class ModelManager(QObject):
             dest = voices_dir / f"{voice}.pt"
             self._download_file(url, dest, voice)
             self.voice_ready.emit(voice)
-        except Exception as e:
+        except Exception:
             raise
 
     def ensure_voice(self, voice: str) -> bool:

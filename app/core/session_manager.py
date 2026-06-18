@@ -1,9 +1,8 @@
 import json
 import uuid
 from datetime import datetime, timezone
-from pathlib import Path
 
-from app.core.config import CONFIG_DIR, config
+from app.core.config import CONFIG_DIR
 
 SESSIONS_FILE = CONFIG_DIR / "sessions.json"
 TEXTS_DIR = CONFIG_DIR / "texts"

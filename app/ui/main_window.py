@@ -3,19 +3,32 @@ import threading
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QAction
 from PySide6.QtWidgets import (
-    QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
-    QLabel, QPushButton, QFrame, QApplication, QComboBox, QSlider,
-    QLineEdit, QFileDialog, QDialog, QListWidget, QListWidgetItem,
-    QDialogButtonBox, QProgressBar,
+    QApplication,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QFrame,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QListWidget,
+    QListWidgetItem,
+    QMainWindow,
+    QProgressBar,
+    QPushButton,
+    QSlider,
+    QVBoxLayout,
+    QWidget,
 )
 
 from app.core.config import config
 from app.core.model_manager import ModelManager
 from app.core.session_manager import SessionManager
 from app.core.tts_engine import TTSEngine
-from app.core.voices import LANGUAGES, VOICES, VOICE_INFO
+from app.core.voices import LANGUAGES, VOICE_INFO, VOICES
 from app.ui.audio_panel import AudioPanel
-from app.ui.icons import icon_play, icon_pencil, icon_plus, icon_search, icon_trash
+from app.ui.icons import icon_pencil, icon_play, icon_plus, icon_search, icon_trash
 from app.ui.settings_dialog import SettingsDialog
 from app.ui.styles import get_style
 from app.ui.text_panel import TextPanel
@@ -478,8 +491,9 @@ class MainWindow(QMainWindow):
 
     def _on_synthesis_finished(self, text: str, audio):
         import os
-        import time
         import re
+        import time
+
         import soundfile as sf
 
         self._synth_progress.setVisible(False)
@@ -528,9 +542,10 @@ class MainWindow(QMainWindow):
 
     def _show_about(self):
         from PySide6.QtWidgets import QMessageBox
+        from app.version import __version__
         QMessageBox.about(
             self, "About Kokoro TTS",
-            "<h3>Kokoro TTS</h3>"
+            f"<h3>Kokoro TTS <small>v{__version__}</small></h3>"
             "<p>A modern text-to-speech application.</p>"
             "<p>Powered by <b>Kokoro v0.9.4</b> — an 82M-parameter "
             "neural TTS model.</p>"
@@ -661,6 +676,7 @@ class MainWindow(QMainWindow):
 
     def _restore_audio(self, s: dict):
         import os
+
         import soundfile as sf
         audio_path = s.get("audio_path")
         if audio_path and os.path.exists(audio_path):

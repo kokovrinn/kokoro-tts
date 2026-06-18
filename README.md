@@ -49,16 +49,25 @@ python app/main.py --reset-model
 python app/main.py --show-download
 ```
 
-## Build (macOS)
+## Build
 
 ```bash
 pip install pyinstaller
 pyinstaller build.spec
 ```
 
-The `.app` bundle will be created in the `dist/` directory.
+Build outputs:
+- **macOS**: `dist/Kokoro TTS.app`
+- **Linux**: `dist/Kokoro TTS/` (run `./Kokoro\ TTS`)
+- **Windows**: `dist/Kokoro TTS/` (run `Kokoro TTS.exe`)
 
-*Note: The build spec uses macOS-specific paths for espeak-ng. Contributions for Linux/Windows build configs are welcome.*
+On Linux you need `espeak-ng` and `libespeak-ng-dev` installed:
+```bash
+sudo apt-get install espeak-ng libespeak-ng-dev    # Debian/Ubuntu
+sudo pacman -S espeak-ng                            # Arch
+```
+
+Pre-built binaries for all platforms are available on the [Releases](https://github.com/kokovrinn/kokoro-tts/releases) page (triggered by pushing a `v*` tag).
 
 ## License
 
