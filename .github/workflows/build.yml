@@ -57,11 +57,17 @@ jobs:
         run: pip install -r requirements.txt
       - name: Build .app
         run: pyinstaller build.spec
+      - name: Package .dmg
+        run: |
+          hdiutil create -volname "Kokoro TTS" \
+            -srcfolder "dist/Kokoro TTS.app" \
+            -ov -format UDZO \
+            "dist/Kokoro-TTS-macOS-ARM.dmg"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: Kokoro-TTS-macOS-ARM
-          path: dist/Kokoro TTS.app
+          path: dist/Kokoro-TTS-macOS-ARM.dmg
 
   build-linux:
     if: github.ref_type == 'tag'
@@ -120,9 +126,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
       - name: Package macOS ARM
-        run: |
-          cd Kokoro-TTS-macOS-ARM
-          zip -r ../Kokoro-TTS-macOS-ARM.zip .
+        run: mv Kokoro-TTS-macOS-ARM/Kokoro-TTS-macOS-ARM.dmg .
       - name: Package Linux
         run: |
           cd Kokoro-TTS-Linux
@@ -138,7 +142,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            Kokoro-TTS-macOS-ARM.zip
+            Kokoro-TTS-macOS-ARM.dmg
             Kokoro-TTS-Linux.tar.gz.part*
             Kokoro-TTS-Windows.zip
           generate_release_notes: true
