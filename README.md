@@ -57,7 +57,7 @@ pyinstaller build.spec
 ```
 
 Build outputs:
-- **macOS**: `dist/Kokoro TTS.app`
+- **macOS (Apple Silicon)**: `dist/Kokoro TTS.app`
 - **Linux**: `dist/Kokoro TTS/` (run `./Kokoro\ TTS`)
 - **Windows**: `dist/Kokoro TTS/` (run `Kokoro TTS.exe`)
 

@@ -63,27 +63,6 @@ jobs:
           name: Kokoro-TTS-macOS-ARM
           path: dist/Kokoro TTS.app/
 
-  build-macos-intel:
-    if: github.ref_type == 'tag'
-    runs-on: macos-13
-    needs: [lint, test]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - name: Install system deps
-        run: brew install portaudio espeak-ng
-      - name: Install Python deps
-        run: pip install -r requirements.txt
-      - name: Build .app
-        run: pyinstaller build.spec
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Kokoro-TTS-macOS-Intel
-          path: dist/Kokoro TTS.app/
-
   build-linux:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
@@ -132,15 +111,12 @@ jobs:
   release:
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
-    needs: [build-macos-arm, build-macos-intel, build-linux, build-windows]
+    needs: [build-macos-arm, build-linux, build-windows]
     steps:
       - uses: actions/download-artifact@v4
       - uses: actions/checkout@v4
       - name: Package macOS ARM
         run: ditto -c -k --sequesterRsrc Kokoro-TTS-macOS-ARM Kokoro-TTS-macOS-ARM.zip
-        shell: bash
-      - name: Package macOS Intel
-        run: ditto -c -k --sequesterRsrc Kokoro-TTS-macOS-Intel Kokoro-TTS-macOS-Intel.zip
         shell: bash
       - name: Package Linux
         run: |
@@ -155,7 +131,6 @@ jobs:
         with:
           files: |
             Kokoro-TTS-macOS-ARM.zip
-            Kokoro-TTS-macOS-Intel.zip
             Kokoro-TTS-Linux.tar.gz
             Kokoro-TTS-Windows.zip
           generate_release_notes: true
