@@ -58,6 +58,13 @@ excluded = [
     "IPython",
     "pygments",
     "PIL",
+    "nvidia",
+    "torch._dynamo",
+    "torch._inductor",
+    "torch.distributed",
+    "torch.profiler",
+    "torch.onnx",
+    "torch.backends.mps",
 ]
 
 hidden = (

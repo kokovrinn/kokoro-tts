@@ -77,7 +77,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y espeak-ng libespeak-ng-dev portaudio19-dev upx
       - name: Install Python deps
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install torch --index-url https://download.pytorch.org/whl/cpu --force-reinstall --no-deps
       - name: Build binary
         run: pyinstaller build.spec
       - name: Upload artifact
