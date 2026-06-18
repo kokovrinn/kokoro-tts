@@ -1,10 +1,37 @@
+# Python
 venv/
 __pycache__/
 *.pyc
 *.pyo
-*.wav
-.DS_Store
+*.pyd
+*.egg-info/
+
+# Build artifacts
 build/
 dist/
 *.spec.bak
+*.app
+*.app/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project
 outputs/*.wav
+outputs/*.mp3
+outputs/*.flac
+outputs/*.aiff
+
+# User config (auto-generated)
+.kokoro-tts/
+
+# Icon (tracked – don't uncomment)
+# kokoro-tts.png

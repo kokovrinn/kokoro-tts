@@ -16,6 +16,9 @@ os.environ.setdefault("HF_HUB_CACHE", str(MODEL_DIR))
 
 from PySide6.QtWidgets import QApplication
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
+
+_icon = str(_project_root / "kokoro-tts.png")
 
 from app.core.config import config
 from app.core.model_manager import ModelManager
@@ -53,6 +56,7 @@ def main():
     app = QApplication(sys.argv)
     app.setApplicationName("Kokoro TTS")
     app.setOrganizationName("kokoro-tts")
+    app.setWindowIcon(QIcon(_icon))
     app.setStyle("Fusion")
     app.setStyleSheet(get_style(config.theme))
 

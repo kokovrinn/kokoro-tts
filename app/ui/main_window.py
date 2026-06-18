@@ -211,13 +211,6 @@ class MainWindow(QMainWindow):
         self._generate_btn.clicked.connect(self._on_transform)
         right_layout.addWidget(self._generate_btn)
 
-        self._synth_progress = QProgressBar()
-        self._synth_progress.setFixedHeight(4)
-        self._synth_progress.setTextVisible(False)
-        self._synth_progress.setRange(0, 0)
-        self._synth_progress.setVisible(False)
-        right_layout.addWidget(self._synth_progress)
-
         self._audio_panel = AudioPanel()
         right_layout.addWidget(self._audio_panel)
 
@@ -227,7 +220,19 @@ class MainWindow(QMainWindow):
 
         root.addLayout(main_layout, 1)
 
-        root.addSpacing(10)
+        bar_holder = QWidget()
+        bar_holder.setFixedHeight(20)
+        bar_layout = QVBoxLayout(bar_holder)
+        bar_layout.setContentsMargins(0, 0, 0, 0)
+        bar_layout.setSpacing(0)
+        bar_layout.addStretch()
+        self._synth_progress = QProgressBar()
+        self._synth_progress.setFixedHeight(4)
+        self._synth_progress.setTextVisible(False)
+        self._synth_progress.setRange(0, 0)
+        self._synth_progress.setVisible(False)
+        bar_layout.addWidget(self._synth_progress)
+        root.addWidget(bar_holder)
 
         footer_frame = QFrame()
         footer_frame.setObjectName("footerBar")
@@ -536,7 +541,7 @@ class MainWindow(QMainWindow):
         s = self._sessions.current
         if s:
             self._session_name.setText(s["name"])
-            self._text_panel.set_text(s.get("text", ""))
+            self._text_panel.set_text(self._sessions.read_text(s["id"]))
             config.language = s.get("language", "a")
             config.voice = s.get("voice", "af_heart")
             config.speed = s.get("speed", 1.0)
@@ -647,7 +652,7 @@ class MainWindow(QMainWindow):
         s = self._sessions.current
         if s:
             self._session_name.setText(s["name"])
-            self._text_panel.set_text(s.get("text", ""))
+            self._text_panel.set_text(self._sessions.read_text(s["id"]))
             config.language = s.get("language", "a")
             config.voice = s.get("voice", "af_heart")
             config.speed = s.get("speed", 1.0)
@@ -677,6 +682,7 @@ class MainWindow(QMainWindow):
             )
 
     def closeEvent(self, event):
+        self._flush_text()
         self._audio_panel.cleanup()
         super().closeEvent(event)
 
@@ -801,7 +807,7 @@ class _SessionListDialog(QDialog):
             name_lbl.setObjectName("sessionItemName")
             left.addWidget(name_lbl)
 
-            preview = s.get("text", "")
+            preview = s.get("preview", "")
             date_str = self._fmt_date(s["updated_at"])
             if preview:
                 preview = preview[:55] + ("…" if len(preview) > 55 else "")
@@ -851,7 +857,7 @@ class _SessionListDialog(QDialog):
             s = self._sessions.get(sid)
             matches = s and (
                 lower in s["name"].lower()
-                or lower in s.get("text", "").lower()
+                or lower in s.get("preview", "").lower()
             )
             item.setHidden(not matches)
 

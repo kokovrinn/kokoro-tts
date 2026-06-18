@@ -1,12 +1,12 @@
 # -*- mode: python ; coding: utf-8 -*-
-import sys
+import site
 from pathlib import Path
 
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 block_cipher = None
 
-venv_site = Path("venv/lib/python3.12/site-packages")
+venv_site = Path(site.getsitepackages()[0])
 
 espeak_lib = str(venv_site / "espeakng_loader/libespeak-ng.dylib")
 espeak_data = str(venv_site / "espeakng_loader/espeak-ng-data")
@@ -77,7 +77,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,
+    icon="kokoro-tts.icns",
 )
 
 coll = COLLECT(
@@ -94,6 +94,6 @@ coll = COLLECT(
 app_bundle = BUNDLE(
     coll,
     name="Kokoro TTS.app",
-    icon=None,
+    icon="kokoro-tts.icns",
     bundle_identifier="com.kokoro.tts",
 )
